@@ -98,8 +98,8 @@ impl VMObjectTrait for VMObjectPhysical {
         inner.mapping_count -= 1;
     }
 
-    fn complete_info(&self, _info: &mut ZxInfoVmo) {
-        unimplemented!()
+    fn complete_info(&self, _info: &mut VmoInfo) {
+        warn!("VmoInfo for physical is unimplemented");
     }
 
     fn get_cache_policy(&self) -> CachePolicy {
@@ -122,11 +122,11 @@ impl VMObjectTrait for VMObjectPhysical {
     }
 
     fn share_count(&self) -> usize {
-        unimplemented!()
+        self.inner.lock().mapping_count as usize
     }
 
     fn committed_pages_in_range(&self, _start_idx: usize, _end_idx: usize) -> usize {
-        unimplemented!()
+        0
     }
 }
 
