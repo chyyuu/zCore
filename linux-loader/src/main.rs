@@ -14,11 +14,12 @@ async fn main() {
     init_logger();
     kernel_hal_unix::init();
 
-    let args: Vec<_> = std::env::args().skip(1).collect();
+    //let args: Vec<_> = std::env::args().skip(1).collect();
+    let args:Vec<String>= vec!["/bin/busybox".into(),"ls".into()];
     let envs = vec!["PATH=/usr/sbin:/usr/bin:/sbin:/bin:/usr/x86_64-alpine-linux-musl/bin".into()];
 
     let exec_path = args[0].clone();
-    let hostfs = HostFS::new("rootfs");
+    let hostfs = HostFS::new("../rootfs");
     let proc: Arc<dyn KernelObject> = run(&exec_path, args, envs, hostfs);
     proc.wait_signal(Signal::PROCESS_TERMINATED).await;
 }

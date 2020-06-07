@@ -431,4 +431,10 @@ mod tests {
 
         pt.unmap(VBASE + 0x1000).unwrap();
     }
+
+    #[test]
+    fn serial_read_write() {
+        init();
+
+    }
 }
