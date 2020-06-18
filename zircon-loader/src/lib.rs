@@ -171,7 +171,8 @@ pub fn run_userboot(images: &Images<impl AsRef<[u8]>>, cmdline: &str) -> Arc<Pro
 
     // check: handle to root proc should be only
 
-    let data = Vec::from(cmdline.replace(':', "\0") + "\0console.shell=true\0");
+    let data =
+        Vec::from(cmdline.replace(':', "\0") + "\0console.shell=true\0virtcon.disable=true\0");
     let msg = MessagePacket { data, handles };
     kernel_channel.write(msg).unwrap();
 
@@ -202,7 +203,7 @@ fn spawn(thread: Arc<Thread>) {
             match cx.trap_num {
                 0x100 => exit = handle_syscall(&thread, &mut cx.general).await,
                 0x20..=0x3f => {
-                    kernel_hal::irq_handle(cx.trap_num as u8 - 0x20);
+                    kernel_hal::InterruptManager::handle(cx.trap_num as u8);
                     if cx.trap_num == 0x20 {
                         EXCEPTIONS_TIMER.add(1);
                         kernel_hal::yield_now().await;
@@ -227,7 +228,12 @@ fn spawn(thread: Arc<Thread>) {
                     {
                         Ok(()) => {}
                         Err(e) => {
-                            error!("{:?}", e);
+                            error!(
+                                "proc={:?} thread={:?} err={:?}",
+                                thread.proc().name(),
+                                thread.name(),
+                                e
+                            );
                             panic!("Page Fault from user mode {:#x?}", cx);
                         }
                     }
