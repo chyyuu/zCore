@@ -10,13 +10,13 @@ description = "Linux programs loader and runner."
 [dependencies]
 log = "0.4"
 xmas-elf = "0.7"
-linux-syscall = { path = "../linux-syscall" }
-linux-object = { path = "../linux-object" }
-zircon-object = { path = "../zircon-object" }
-kernel-hal = { path = "../kernel-hal" }
+linux-syscall = { git = "https://github.com/rcore-os/zCore.git"  }
+linux-object = { git = "https://github.com/rcore-os/zCore.git" }
+zircon-object = { git = "https://github.com/rcore-os/zCore.git" }
+kernel-hal = { git = "https://github.com/rcore-os/zCore.git" }
 rcore-fs-hostfs = { git = "https://github.com/rcore-os/rcore-fs", rev = "e17b27b", optional = true }
 env_logger = { version = "0.7", optional = true }
-kernel-hal-unix = { path = "../kernel-hal-unix", optional = true }
+kernel-hal-unix = { git = "https://github.com/rcore-os/zCore.git", optional = true }
 async-std = { version = "1.5", features = ["attributes"], optional = true }
 
 [features]
