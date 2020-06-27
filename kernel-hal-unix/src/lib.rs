@@ -11,6 +11,7 @@ use {
     alloc::collections::VecDeque,
     async_std::task_local,
     core::{cell::Cell, future::Future, pin::Pin},
+    git_version::git_version,
     lazy_static::lazy_static,
     std::fmt::{Debug, Formatter},
     std::fs::{File, OpenOptions},
@@ -21,16 +22,14 @@ use {
     tempfile::tempdir,
 };
 
-pub use self::trap::syscall_entry;
 pub use kernel_hal::defs::*;
 use kernel_hal::vdso::*;
 pub use kernel_hal::*;
 use std::io::Read;
+pub use trapframe::syscall_fn_entry as syscall_entry;
 
 #[cfg(target_os = "macos")]
 include!("macos.rs");
-
-mod trap;
 
 #[repr(C)]
 pub struct Thread {
@@ -66,9 +65,7 @@ task_local! {
 
 #[export_name = "hal_context_run"]
 unsafe fn context_run(context: &mut UserContext) {
-    trap::run_user(&mut context.general);
-    // cause: syscall
-    context.trap_num = 0x100;
+    context.run_fncall();
 }
 
 /// Page Table
@@ -374,7 +371,7 @@ pub fn timer_set(deadline: Duration, callback: Box<dyn FnOnce(Duration) + Send +
 #[export_name = "hal_vdso_constants"]
 pub fn vdso_constants() -> VdsoConstants {
     let tsc_frequency = 3000u16;
-    VdsoConstants {
+    let mut constants = VdsoConstants {
         max_num_cpus: 1,
         features: Features {
             cpu: 0,
@@ -387,8 +384,14 @@ pub fn vdso_constants() -> VdsoConstants {
         ticks_to_mono_numerator: 1000,
         ticks_to_mono_denominator: tsc_frequency as u32,
         physmem: PMEM_SIZE as u64,
-        buildid: Default::default(),
-    }
+        version_string_len: 0,
+        version_string: Default::default(),
+    };
+    constants.set_version_string(git_version!(
+        prefix = "git-",
+        args = ["--always", "--abbrev=40", "--dirty=-dirty"]
+    ));
+    constants
 }
 
 /// Initialize the HAL.

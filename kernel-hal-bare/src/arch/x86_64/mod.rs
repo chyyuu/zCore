@@ -3,10 +3,12 @@ use {
     acpi::{parse_rsdp, Acpi, AcpiHandler, PhysicalMapping},
     alloc::{collections::VecDeque, vec::Vec},
     apic::{LocalApic, XApic},
+    core::arch::x86_64::{__cpuid, _mm_clflush, _mm_mfence},
     core::convert::TryFrom,
     core::fmt::{Arguments, Write},
     core::ptr::NonNull,
     core::time::Duration,
+    git_version::git_version,
     rcore_console::{Console, ConsoleOnGraphic, DrawTarget, Pixel, Rgb888, Size},
     spin::Mutex,
     uart_16550::SerialPort,
@@ -309,7 +311,7 @@ const IOAPIC_ADDR: usize = 0xfec0_0000;
 #[export_name = "hal_vdso_constants"]
 fn vdso_constants() -> VdsoConstants {
     let tsc_frequency = unsafe { TSC_FREQUENCY };
-    VdsoConstants {
+    let mut constants = VdsoConstants {
         max_num_cpus: 1,
         features: Features {
             cpu: 0,
@@ -322,8 +324,14 @@ fn vdso_constants() -> VdsoConstants {
         ticks_to_mono_numerator: 1000,
         ticks_to_mono_denominator: tsc_frequency as u32,
         physmem: 0,
-        buildid: Default::default(),
-    }
+        version_string_len: 0,
+        version_string: Default::default(),
+    };
+    constants.set_version_string(git_version!(
+        prefix = "git-",
+        args = ["--always", "--abbrev=40", "--dirty=-dirty"]
+    ));
+    constants
 }
 
 /// Initialize the HAL.
@@ -415,4 +423,21 @@ pub fn outpd(port: u16, value: u32) {
 #[export_name = "hal_inpd"]
 pub fn inpd(port: u16) -> u32 {
     unsafe { Port::new(port).read() }
+}
+
+/// Flush the physical frame.
+#[export_name = "hal_frame_flush"]
+pub fn frame_flush(target: PhysAddr) {
+    unsafe {
+        for paddr in (target..target + PAGE_SIZE).step_by(cacheline_size()) {
+            _mm_clflush(phys_to_virt(paddr) as *const u8);
+        }
+        _mm_mfence();
+    }
+}
+
+/// Get cache line size in bytes.
+fn cacheline_size() -> usize {
+    let leaf = unsafe { __cpuid(1).ebx };
+    (((leaf >> 8) & 0xff) << 3) as usize
 }
