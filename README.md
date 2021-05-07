@@ -123,3 +123,9 @@ cd scripts && python3 libc-tests.py
 
 ### Some plans
 - https://github.com/rcore-os/zCore/wiki/Plans
+
+### other info
+```sh
+#update rboot
+git submodule update --init  --recursive
+```
