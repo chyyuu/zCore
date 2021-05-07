@@ -1,4 +1,7 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source to the Rust file `kernel-hal-unix/src/lib.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>lib.rs.html -- source</title><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../dark.css"><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script src="../../storage.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="shortcut icon" href="../../favicon.ico"><style type="text/css">#crate-search{background-image:url("../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div><a href='../../kernel_hal_unix/index.html'><div class='logo-container'><img src='../../rust-logo.png' alt='logo'></div></a></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../../theme.js"></script><nav class="sub"><form class="search-form"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" disabled autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><a id="settings-menu" href="../../settings.html"><img src="../../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><pre class="line-numbers"><span id="1">  1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `kernel-hal-unix/src/lib.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>lib.rs - source</title><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../light.css"  id="themeStyle"><link rel="stylesheet" type="text/css" href="../../dark.css" disabled ><link rel="stylesheet" type="text/css" href="../../ayu.css" disabled ><script id="default-settings"></script><script src="../../storage.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="icon" type="image/svg+xml" href="../../favicon.svg">
+<link rel="alternate icon" type="image/png" href="../../favicon-16x16.png">
+<link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><style type="text/css">#crate-search{background-image:url("../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu" role="button">&#9776;</div><a href='../../kernel_hal_unix/index.html'><div class='logo-container rust-logo'><img src='../../rust-logo.png' alt='logo'></div></a></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!" aria-haspopup="menu"><img src="../../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices" role="menu"></div></div><script src="../../theme.js"></script><nav class="sub"><form class="search-form"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" disabled autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><button type="button" class="help-button">?</button>
+                <a id="settings-menu" href="../../settings.html"><img src="../../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><pre class="line-numbers"><span id="1">  1</span>
 <span id="2">  2</span>
 <span id="3">  3</span>
 <span id="4">  4</span>
@@ -434,8 +437,17 @@
 <span id="434">434</span>
 <span id="435">435</span>
 <span id="436">436</span>
+<span id="437">437</span>
+<span id="438">438</span>
+<span id="439">439</span>
+<span id="440">440</span>
+<span id="441">441</span>
+<span id="442">442</span>
+<span id="443">443</span>
+<span id="444">444</span>
+<span id="445">445</span>
 </pre><div class="example-wrap"><pre class="rust ">
-<span class="attribute">#![<span class="ident">feature</span>(<span class="ident">asm</span>, <span class="ident">global_asm</span>)]</span>
+<span class="attribute">#![<span class="ident">feature</span>(<span class="ident">asm</span>)]</span>
 <span class="attribute">#![<span class="ident">feature</span>(<span class="ident">linkage</span>)]</span>
 <span class="attribute">#![<span class="ident">deny</span>(<span class="ident">warnings</span>)]</span>
 
@@ -448,6 +460,8 @@
     <span class="ident">alloc</span>::<span class="ident">collections</span>::<span class="ident">VecDeque</span>,
     <span class="ident">async_std</span>::<span class="ident">task_local</span>,
     <span class="ident">core</span>::{<span class="ident">cell</span>::<span class="ident">Cell</span>, <span class="ident">future</span>::<span class="ident">Future</span>, <span class="ident">pin</span>::<span class="ident">Pin</span>},
+    <span class="ident">git_version</span>::<span class="ident">git_version</span>,
+    <span class="ident">kernel_hal</span>::<span class="ident">PageTableTrait</span>,
     <span class="ident">lazy_static</span>::<span class="ident">lazy_static</span>,
     <span class="ident">std</span>::<span class="ident">fmt</span>::{<span class="ident">Debug</span>, <span class="ident">Formatter</span>},
     <span class="ident">std</span>::<span class="ident">fs</span>::{<span class="ident">File</span>, <span class="ident">OpenOptions</span>},
@@ -458,16 +472,14 @@
     <span class="ident">tempfile</span>::<span class="ident">tempdir</span>,
 };
 
-<span class="kw">pub</span> <span class="kw">use</span> <span class="self">self</span>::<span class="ident">trap</span>::<span class="ident">syscall_entry</span>;
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">kernel_hal</span>::<span class="ident">defs</span>::<span class="kw-2">*</span>;
 <span class="kw">use</span> <span class="ident">kernel_hal</span>::<span class="ident">vdso</span>::<span class="kw-2">*</span>;
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">kernel_hal</span>::<span class="kw-2">*</span>;
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">io</span>::<span class="ident">Read</span>;
+<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">trapframe</span>::<span class="ident">syscall_fn_entry</span> <span class="kw">as</span> <span class="ident">syscall_entry</span>;
 
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;macos&quot;</span>)]</span>
 <span class="macro">include</span><span class="macro">!</span>(<span class="string">&quot;macos.rs&quot;</span>);
-
-<span class="kw">mod</span> <span class="ident">trap</span>;
 
 <span class="attribute">#[<span class="ident">repr</span>(<span class="ident">C</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Thread</span> {
@@ -503,11 +515,7 @@
 
 <span class="attribute">#[<span class="ident">export_name</span> <span class="op">=</span> <span class="string">&quot;hal_context_run&quot;</span>]</span>
 <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">context_run</span>(<span class="ident">context</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">UserContext</span>) {
-    <span class="ident">core</span>::<span class="ident">arch</span>::<span class="ident">x86_64</span>::<span class="ident">_fxrstor64</span>(<span class="kw-2">&amp;</span><span class="ident">context</span>.<span class="ident">vector</span> <span class="kw">as</span> <span class="kw-2">*</span><span class="kw">const</span> <span class="ident">VectorRegs</span> <span class="kw">as</span> <span class="kw">_</span>);
-    <span class="ident">trap</span>::<span class="ident">run_user</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">context</span>.<span class="ident">general</span>);
-    <span class="ident">core</span>::<span class="ident">arch</span>::<span class="ident">x86_64</span>::<span class="ident">_fxsave64</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">context</span>.<span class="ident">vector</span> <span class="kw">as</span> <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">VectorRegs</span> <span class="kw">as</span> <span class="kw">_</span>);
-    <span class="comment">// cause: syscall</span>
-    <span class="ident">context</span>.<span class="ident">trap_num</span> <span class="op">=</span> <span class="number">0x100</span>;
+    <span class="ident">context</span>.<span class="ident">run_fncall</span>();
 }
 
 <span class="doccomment">/// Page Table</span>
@@ -523,10 +531,12 @@
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
         <span class="ident">PageTable</span> { <span class="ident">table_phys</span>: <span class="number">0</span> }
     }
+}
 
+<span class="kw">impl</span> <span class="ident">PageTableTrait</span> <span class="kw">for</span> <span class="ident">PageTable</span> {
     <span class="doccomment">/// Map the page of `vaddr` to the frame of `paddr` with `flags`.</span>
     <span class="attribute">#[<span class="ident">export_name</span> <span class="op">=</span> <span class="string">&quot;hal_pt_map&quot;</span>]</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">map</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">vaddr</span>: <span class="ident">VirtAddr</span>, <span class="ident">paddr</span>: <span class="ident">PhysAddr</span>, <span class="ident">flags</span>: <span class="ident">MMUFlags</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), ()<span class="op">&gt;</span> {
+    <span class="kw">fn</span> <span class="ident">map</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">vaddr</span>: <span class="ident">VirtAddr</span>, <span class="ident">paddr</span>: <span class="ident">PhysAddr</span>, <span class="ident">flags</span>: <span class="ident">MMUFlags</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
         <span class="macro">debug_assert</span><span class="macro">!</span>(<span class="ident">page_aligned</span>(<span class="ident">vaddr</span>));
         <span class="macro">debug_assert</span><span class="macro">!</span>(<span class="ident">page_aligned</span>(<span class="ident">paddr</span>));
         <span class="kw">let</span> <span class="ident">prot</span> <span class="op">=</span> <span class="ident">flags</span>.<span class="ident">to_mmap_prot</span>();
@@ -536,13 +546,13 @@
 
     <span class="doccomment">/// Unmap the page of `vaddr`.</span>
     <span class="attribute">#[<span class="ident">export_name</span> <span class="op">=</span> <span class="string">&quot;hal_pt_unmap&quot;</span>]</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">unmap</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">vaddr</span>: <span class="ident">VirtAddr</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), ()<span class="op">&gt;</span> {
+    <span class="kw">fn</span> <span class="ident">unmap</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">vaddr</span>: <span class="ident">VirtAddr</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
         <span class="self">self</span>.<span class="ident">unmap_cont</span>(<span class="ident">vaddr</span>, <span class="number">1</span>)
     }
 
     <span class="doccomment">/// Change the `flags` of the page of `vaddr`.</span>
     <span class="attribute">#[<span class="ident">export_name</span> <span class="op">=</span> <span class="string">&quot;hal_pt_protect&quot;</span>]</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">protect</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">vaddr</span>: <span class="ident">VirtAddr</span>, <span class="ident">flags</span>: <span class="ident">MMUFlags</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), ()<span class="op">&gt;</span> {
+    <span class="kw">fn</span> <span class="ident">protect</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">vaddr</span>: <span class="ident">VirtAddr</span>, <span class="ident">flags</span>: <span class="ident">MMUFlags</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
         <span class="macro">debug_assert</span><span class="macro">!</span>(<span class="ident">page_aligned</span>(<span class="ident">vaddr</span>));
         <span class="kw">let</span> <span class="ident">prot</span> <span class="op">=</span> <span class="ident">flags</span>.<span class="ident">to_mmap_prot</span>();
         <span class="kw">let</span> <span class="ident">ret</span> <span class="op">=</span> <span class="kw">unsafe</span> { <span class="ident">libc</span>::<span class="ident">mprotect</span>(<span class="ident">vaddr</span> <span class="kw">as</span> <span class="kw">_</span>, <span class="ident">PAGE_SIZE</span>, <span class="ident">prot</span>) };
@@ -552,13 +562,19 @@
 
     <span class="doccomment">/// Query the physical address which the page of `vaddr` maps to.</span>
     <span class="attribute">#[<span class="ident">export_name</span> <span class="op">=</span> <span class="string">&quot;hal_pt_query&quot;</span>]</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">query</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">vaddr</span>: <span class="ident">VirtAddr</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">PhysAddr</span>, ()<span class="op">&gt;</span> {
+    <span class="kw">fn</span> <span class="ident">query</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">vaddr</span>: <span class="ident">VirtAddr</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">PhysAddr</span><span class="op">&gt;</span> {
         <span class="macro">debug_assert</span><span class="macro">!</span>(<span class="ident">page_aligned</span>(<span class="ident">vaddr</span>));
         <span class="macro">unimplemented</span><span class="macro">!</span>()
     }
 
+    <span class="doccomment">/// Get the physical address of root page table.</span>
+    <span class="attribute">#[<span class="ident">export_name</span> <span class="op">=</span> <span class="string">&quot;hal_pt_table_phys&quot;</span>]</span>
+    <span class="kw">fn</span> <span class="ident">table_phys</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">PhysAddr</span> {
+        <span class="self">self</span>.<span class="ident">table_phys</span>
+    }
+
     <span class="attribute">#[<span class="ident">export_name</span> <span class="op">=</span> <span class="string">&quot;hal_pt_unmap_cont&quot;</span>]</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">unmap_cont</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">vaddr</span>: <span class="ident">VirtAddr</span>, <span class="ident">pages</span>: <span class="ident">usize</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), ()<span class="op">&gt;</span> {
+    <span class="kw">fn</span> <span class="ident">unmap_cont</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">vaddr</span>: <span class="ident">VirtAddr</span>, <span class="ident">pages</span>: <span class="ident">usize</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
         <span class="kw">if</span> <span class="ident">pages</span> <span class="op">=</span><span class="op">=</span> <span class="number">0</span> {
             <span class="kw">return</span> <span class="prelude-val">Ok</span>(());
         }
@@ -575,7 +591,7 @@
 }
 
 <span class="kw">impl</span> <span class="ident">Debug</span> <span class="kw">for</span> <span class="ident">PhysFrame</span> {
-    <span class="kw">fn</span> <span class="ident">fmt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">f</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Formatter</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">std</span>::<span class="ident">fmt</span>::<span class="ident">Error</span><span class="op">&gt;</span> {
+    <span class="kw">fn</span> <span class="ident">fmt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">f</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Formatter</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">core</span>::<span class="ident">result</span>::<span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">std</span>::<span class="ident">fmt</span>::<span class="ident">Error</span><span class="op">&gt;</span> {
         <span class="macro">write</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;PhysFrame({:#x})&quot;</span>, <span class="self">self</span>.<span class="ident">paddr</span>)
     }
 }
@@ -587,7 +603,7 @@
 
 <span class="kw">impl</span> <span class="ident">PhysFrame</span> {
     <span class="attribute">#[<span class="ident">export_name</span> <span class="op">=</span> <span class="string">&quot;hal_frame_alloc&quot;</span>]</span>
-    <span class="kw">pub</span> <span class="kw">extern</span> <span class="string">&quot;C&quot;</span> <span class="kw">fn</span> <span class="ident">alloc</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">alloc</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span> {
         <span class="kw">let</span> <span class="ident">ret</span> <span class="op">=</span> <span class="ident">AVAILABLE_FRAMES</span>
             .<span class="ident">lock</span>()
             .<span class="ident">unwrap</span>()
@@ -612,7 +628,7 @@
 
 <span class="kw">fn</span> <span class="ident">phys_to_virt</span>(<span class="ident">paddr</span>: <span class="ident">PhysAddr</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">VirtAddr</span> {
     <span class="doccomment">/// Map physical memory from here.</span>
-    <span class="kw">const</span> <span class="ident">PMEM_BASE</span>: <span class="ident">VirtAddr</span> <span class="op">=</span> <span class="number">0x8_00000000</span>;
+    <span class="kw">const</span> <span class="ident">PMEM_BASE</span>: <span class="ident">VirtAddr</span> <span class="op">=</span> <span class="number">0x8_0000_0000</span>;
 
     <span class="ident">PMEM_BASE</span> <span class="op">+</span> <span class="ident">paddr</span>
 }
@@ -645,26 +661,26 @@
     }
 }
 
+<span class="doccomment">/// Zero physical memory at `[paddr, paddr + len)`</span>
+<span class="attribute">#[<span class="ident">export_name</span> <span class="op">=</span> <span class="string">&quot;hal_pmem_zero&quot;</span>]</span>
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">pmem_zero</span>(<span class="ident">paddr</span>: <span class="ident">PhysAddr</span>, <span class="ident">len</span>: <span class="ident">usize</span>) {
+    <span class="macro">trace</span><span class="macro">!</span>(<span class="string">&quot;pmem_zero: addr={:#x}, len={:#x}&quot;</span>, <span class="ident">paddr</span>, <span class="ident">len</span>);
+    <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">paddr</span> <span class="op">+</span> <span class="ident">len</span> <span class="op">&lt;</span><span class="op">=</span> <span class="ident">PMEM_SIZE</span>);
+    <span class="ident">ensure_mmap_pmem</span>();
+    <span class="kw">unsafe</span> {
+        <span class="ident">core</span>::<span class="ident">ptr</span>::<span class="ident">write_bytes</span>(<span class="ident">phys_to_virt</span>(<span class="ident">paddr</span>) <span class="kw">as</span> <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">u8</span>, <span class="number">0</span>, <span class="ident">len</span>);
+    }
+}
+
 <span class="doccomment">/// Copy content of `src` frame to `target` frame</span>
 <span class="attribute">#[<span class="ident">export_name</span> <span class="op">=</span> <span class="string">&quot;hal_frame_copy&quot;</span>]</span>
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">frame_copy</span>(<span class="ident">src</span>: <span class="ident">PhysAddr</span>, <span class="ident">target</span>: <span class="ident">PhysAddr</span>) {
     <span class="macro">trace</span><span class="macro">!</span>(<span class="string">&quot;frame_copy: {:#x} &lt;- {:#x}&quot;</span>, <span class="ident">target</span>, <span class="ident">src</span>);
-    <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">src</span> <span class="op">+</span> <span class="ident">PAGE_SIZE</span> <span class="op">&lt;</span><span class="op">=</span> <span class="ident">PMEM_SIZE</span> <span class="kw-2">&amp;</span><span class="op">&amp;</span> <span class="ident">target</span> <span class="op">+</span> <span class="ident">PAGE_SIZE</span> <span class="op">&lt;</span><span class="op">=</span> <span class="ident">PMEM_SIZE</span>);
+    <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">src</span> <span class="op">+</span> <span class="ident">PAGE_SIZE</span> <span class="op">&lt;</span><span class="op">=</span> <span class="ident">PMEM_SIZE</span> <span class="op">&amp;&amp;</span> <span class="ident">target</span> <span class="op">+</span> <span class="ident">PAGE_SIZE</span> <span class="op">&lt;</span><span class="op">=</span> <span class="ident">PMEM_SIZE</span>);
     <span class="ident">ensure_mmap_pmem</span>();
     <span class="kw">unsafe</span> {
         <span class="kw">let</span> <span class="ident">buf</span> <span class="op">=</span> <span class="ident">phys_to_virt</span>(<span class="ident">src</span>) <span class="kw">as</span> <span class="kw-2">*</span><span class="kw">const</span> <span class="ident">u8</span>;
         <span class="ident">buf</span>.<span class="ident">copy_to_nonoverlapping</span>(<span class="ident">phys_to_virt</span>(<span class="ident">target</span>) <span class="kw">as</span> <span class="kw">_</span>, <span class="ident">PAGE_SIZE</span>);
-    }
-}
-
-<span class="doccomment">/// Zero `target` frame.</span>
-<span class="attribute">#[<span class="ident">export_name</span> <span class="op">=</span> <span class="string">&quot;hal_frame_zero&quot;</span>]</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">frame_zero</span>(<span class="ident">target</span>: <span class="ident">PhysAddr</span>) {
-    <span class="macro">trace</span><span class="macro">!</span>(<span class="string">&quot;frame_zero: {:#x}&quot;</span>, <span class="ident">target</span>);
-    <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">target</span> <span class="op">+</span> <span class="ident">PAGE_SIZE</span> <span class="op">&lt;</span> <span class="ident">PMEM_SIZE</span>);
-    <span class="ident">ensure_mmap_pmem</span>();
-    <span class="kw">unsafe</span> {
-        <span class="ident">core</span>::<span class="ident">ptr</span>::<span class="ident">write_bytes</span>(<span class="ident">phys_to_virt</span>(<span class="ident">target</span>) <span class="kw">as</span> <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">u8</span>, <span class="number">0</span>, <span class="ident">PAGE_SIZE</span>);
     }
 }
 
@@ -680,7 +696,7 @@
     <span class="ident">x</span> <span class="op">%</span> <span class="ident">PAGE_SIZE</span> <span class="op">=</span><span class="op">=</span> <span class="number">0</span>
 }
 
-<span class="kw">const</span> <span class="ident">PMEM_SIZE</span>: <span class="ident">usize</span> <span class="op">=</span> <span class="number">0x400_00000</span>; <span class="comment">// 1GiB</span>
+<span class="kw">const</span> <span class="ident">PMEM_SIZE</span>: <span class="ident">usize</span> <span class="op">=</span> <span class="number">0x4000_0000</span>; <span class="comment">// 1GiB</span>
 
 <span class="macro">lazy_static</span><span class="macro">!</span> {
     <span class="kw">static</span> <span class="kw-2">ref</span> <span class="ident">FRAME_FILE</span>: <span class="ident">File</span> <span class="op">=</span> <span class="ident">create_pmem_file</span>();
@@ -735,11 +751,11 @@
 }
 
 <span class="kw">trait</span> <span class="ident">FlagsExt</span> {
-    <span class="kw">fn</span> <span class="ident">to_mmap_prot</span>(<span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">libc</span>::<span class="ident">c_int</span>;
+    <span class="kw">fn</span> <span class="ident">to_mmap_prot</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">libc</span>::<span class="ident">c_int</span>;
 }
 
 <span class="kw">impl</span> <span class="ident">FlagsExt</span> <span class="kw">for</span> <span class="ident">MMUFlags</span> {
-    <span class="kw">fn</span> <span class="ident">to_mmap_prot</span>(<span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">libc</span>::<span class="ident">c_int</span> {
+    <span class="kw">fn</span> <span class="ident">to_mmap_prot</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">libc</span>::<span class="ident">c_int</span> {
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">flags</span> <span class="op">=</span> <span class="number">0</span>;
         <span class="kw">if</span> <span class="self">self</span>.<span class="ident">contains</span>(<span class="ident">MMUFlags</span>::<span class="ident">READ</span>) {
             <span class="ident">flags</span> <span class="op">|</span><span class="op">=</span> <span class="ident">libc</span>::<span class="ident">PROT_READ</span>;
@@ -756,19 +772,18 @@
 
 <span class="macro">lazy_static</span><span class="macro">!</span> {
     <span class="kw">static</span> <span class="kw-2">ref</span> <span class="ident">STDIN</span>: <span class="ident">Mutex</span><span class="op">&lt;</span><span class="ident">VecDeque</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">Mutex</span>::<span class="ident">new</span>(<span class="ident">VecDeque</span>::<span class="ident">new</span>());
-    <span class="kw">static</span> <span class="kw-2">ref</span> <span class="ident">STDIN_CALLBACK</span>: <span class="ident">Mutex</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Box</span><span class="op">&lt;</span><span class="kw">dyn</span> <span class="ident">FnOnce</span>() <span class="op">+</span> <span class="ident">Send</span> <span class="op">+</span> <span class="ident">Sync</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">Mutex</span>::<span class="ident">new</span>(<span class="ident">Vec</span>::<span class="ident">new</span>());
+    <span class="kw">static</span> <span class="kw-2">ref</span> <span class="ident">STDIN_CALLBACK</span>: <span class="ident">Mutex</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Box</span><span class="op">&lt;</span><span class="kw">dyn</span> <span class="ident">Fn</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> <span class="op">+</span> <span class="ident">Send</span> <span class="op">+</span> <span class="ident">Sync</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="op">=</span>
+        <span class="ident">Mutex</span>::<span class="ident">new</span>(<span class="ident">Vec</span>::<span class="ident">new</span>());
 }
 
 <span class="doccomment">/// Put a char by serial interrupt handler.</span>
 <span class="kw">fn</span> <span class="ident">serial_put</span>(<span class="ident">x</span>: <span class="ident">u8</span>) {
     <span class="ident">STDIN</span>.<span class="ident">lock</span>().<span class="ident">unwrap</span>().<span class="ident">push_back</span>(<span class="ident">x</span>);
-    <span class="kw">for</span> <span class="ident">callback</span> <span class="kw">in</span> <span class="ident">STDIN_CALLBACK</span>.<span class="ident">lock</span>().<span class="ident">unwrap</span>().<span class="ident">drain</span>(..) {
-        <span class="ident">callback</span>();
-    }
+    <span class="ident">STDIN_CALLBACK</span>.<span class="ident">lock</span>().<span class="ident">unwrap</span>().<span class="ident">retain</span>(<span class="op">|</span><span class="ident">f</span><span class="op">|</span> <span class="op">!</span><span class="ident">f</span>());
 }
 
 <span class="attribute">#[<span class="ident">export_name</span> <span class="op">=</span> <span class="string">&quot;hal_serial_set_callback&quot;</span>]</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">serial_set_callback</span>(<span class="ident">callback</span>: <span class="ident">Box</span><span class="op">&lt;</span><span class="kw">dyn</span> <span class="ident">FnOnce</span>() <span class="op">+</span> <span class="ident">Send</span> <span class="op">+</span> <span class="ident">Sync</span><span class="op">&gt;</span>) {
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">serial_set_callback</span>(<span class="ident">callback</span>: <span class="ident">Box</span><span class="op">&lt;</span><span class="kw">dyn</span> <span class="ident">Fn</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> <span class="op">+</span> <span class="ident">Send</span> <span class="op">+</span> <span class="ident">Sync</span><span class="op">&gt;</span>) {
     <span class="ident">STDIN_CALLBACK</span>.<span class="ident">lock</span>().<span class="ident">unwrap</span>().<span class="ident">push</span>(<span class="ident">callback</span>);
 }
 
@@ -813,7 +828,7 @@
 <span class="attribute">#[<span class="ident">export_name</span> <span class="op">=</span> <span class="string">&quot;hal_vdso_constants&quot;</span>]</span>
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">vdso_constants</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">VdsoConstants</span> {
     <span class="kw">let</span> <span class="ident">tsc_frequency</span> <span class="op">=</span> <span class="number">3000u16</span>;
-    <span class="ident">VdsoConstants</span> {
+    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">constants</span> <span class="op">=</span> <span class="ident">VdsoConstants</span> {
         <span class="ident">max_num_cpus</span>: <span class="number">1</span>,
         <span class="ident">features</span>: <span class="ident">Features</span> {
             <span class="ident">cpu</span>: <span class="number">0</span>,
@@ -826,8 +841,14 @@
         <span class="ident">ticks_to_mono_numerator</span>: <span class="number">1000</span>,
         <span class="ident">ticks_to_mono_denominator</span>: <span class="ident">tsc_frequency</span> <span class="kw">as</span> <span class="ident">u32</span>,
         <span class="ident">physmem</span>: <span class="ident">PMEM_SIZE</span> <span class="kw">as</span> <span class="ident">u64</span>,
-        <span class="ident">buildid</span>: <span class="ident">Default</span>::<span class="ident">default</span>(),
-    }
+        <span class="ident">version_string_len</span>: <span class="number">0</span>,
+        <span class="ident">version_string</span>: <span class="ident">Default</span>::<span class="ident">default</span>(),
+    };
+    <span class="ident">constants</span>.<span class="ident">set_version_string</span>(<span class="macro">git_version</span><span class="macro">!</span>(
+        <span class="ident">prefix</span> <span class="op">=</span> <span class="string">&quot;git-&quot;</span>,
+        <span class="ident">args</span> <span class="op">=</span> [<span class="string">&quot;--always&quot;</span>, <span class="string">&quot;--abbrev=40&quot;</span>, <span class="string">&quot;--dirty=-dirty&quot;</span>]
+    ));
+    <span class="ident">constants</span>
 }
 
 <span class="doccomment">/// Initialize the HAL.</span>
@@ -872,4 +893,5 @@
     }
 }
 </pre></div>
-</section><section id="search" class="content hidden"></section><section class="footer"></section><script>window.rootPath = "../../";window.currentCrate = "kernel_hal_unix";</script><script src="../../aliases.js"></script><script src="../../main.js"></script><script src="../../source-script.js"></script><script src="../../source-files.js"></script><script defer src="../../search-index.js"></script></body></html>
+</section><section id="search" class="content hidden"></section><section class="footer"></section><div id="rustdoc-vars" data-root-path="../../" data-current-crate="kernel_hal_unix"></div>
+    <script src="../../main.js"></script><script src="../../source-script.js"></script><script src="../../source-files.js"></script><script defer src="../../search-index.js"></script></body></html>

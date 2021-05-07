@@ -1,1 +1,1 @@
-initSidebarItems({"struct":[["DebugLog",""]]});
+initSidebarItems({"constant":[["DLOG_MAX_LEN","Max length of Dlog read buffer."]],"enum":[["Severity","Log entry severity. Used for coarse filtering of log messages."]],"struct":[["DebugLog","Debuglog - Kernel debuglog"]]});
