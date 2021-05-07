@@ -54,6 +54,7 @@ qemu_opts += \
 else ifeq ($(arch), riscv64)
 qemu_opts += \
 	-machine virt \
+	-bios default \
 	-no-reboot \
 	-no-shutdown \
 	-nographic \
