@@ -134,6 +134,9 @@ endif
 kernel:
 	echo Building zCore kenel
 	cargo build $(build_args)
+doc:
+	echo Building zCore kenel
+	cargo doc $(build_args)
 
 bootloader:
 	cd ../rboot && make build

@@ -6,7 +6,7 @@ members = [
     "linux-object",
     "linux-syscall",
     "linux-loader",
-    "kernel-hal-unix",
+    "kernel-hal-bare",
     "kernel-hal",
 ]
 
