@@ -30,7 +30,7 @@ async fn main() {
     let args: Vec<_> = std::env::args().skip(1).collect();
     let envs = vec!["PATH=/usr/sbin:/usr/bin:/sbin:/bin:/usr/x86_64-alpine-linux-musl/bin".into()];
 
-    let hostfs = HostFS::new("rootfs");
+    let hostfs = HostFS::new("../rootfs");
     let proc = run(args, envs, hostfs);
     let code = proc.wait_for_exit().await;
     std::process::exit(code as i32);
